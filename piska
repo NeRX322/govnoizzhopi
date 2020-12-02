@@ -1,0 +1,164 @@
+#include <iostream>
+#include <string>
+#include <climits>
+using namespace std;
+
+template<class t1,class t2,class t3> //объявляю функцию
+void CountingSort(t1 a, t2 c, t3 n)
+{
+    for(int i=0; i<10000; i++)       //заполняю массив счета чисел нулями
+    {
+        c[i]=0;
+    }
+    int zc=INT_MIN;
+    int zb=INT_MAX;
+    for(int i=0; i<n; i++)           //нахожу минимум и максимум данного массива
+    {
+        if(a[i]>zc)zc=a[i];
+        if(a[i]<zb)zb=a[i];
+    }
+    for(int i=0; i<n; i++)           //прибавляю минимальное число ко всем числам массива чтобы не было отрицательных
+    {
+        a[i]-=zb;
+        c[a[i]]++;                   //считаю кол-во каждого числа
+    }
+
+    int k=0;
+    for(int i=0; i<zc-zb+1; i++)     //сортирую массив
+    {
+        while(c[i] != 0)
+        {
+            a[k]=i;
+            k++;
+            c[i]--;
+        }
+    }
+    for(int i=0; i<n; i++)           //отнимаю минимум данного массива чтобы он принял изначальное состояние по диапазону чисел
+    {
+        a[i]+=zb;
+    }
+}
+
+void quickSort(int *a, int l, int r)
+{
+    int p;                           // флажок середины
+    int lh = l;                      //флажок слева
+    int rh = r;                      // флажок справа
+    p = a[l];
+    while (l < r)
+    {
+        while ((a[r] >= p) && (l < r))
+            r--;
+        if (l != r)
+        {
+            a[l] = a[r];
+            l++;
+        }
+        while ((a[l] <= p) && (l < r))
+            l++;
+        if (l != r)
+        {
+            a[r] = a[l];
+            r--;
+        }
+    }
+    a[l] = p;
+    p = l;
+    l = lh;
+    r = rh;
+    if (l < p)
+        quickSort(a, l, p - 1);
+    if (r > p)
+        quickSort(a, p + 1, r);
+}
+int main()
+{
+    setlocale(LC_ALL,"Rus");
+    string ns;
+    cout << "Введите размер массива: " ;
+    cin >> ns;
+    int k=0;
+    if(ns[0]>'9' || ns[0]<'1')
+        k=1;
+    for(int i=1; i<ns.length(); i++)
+    {
+        if(ns[i]>'9' || ns[i]<'0')
+            k=1;
+    }
+    int n=0;
+    for(int i=0; i<ns.length(); i++)
+    {
+        n*=10;
+        n+=(ns[i]-'0');
+    }
+    if(k==0)
+    {
+        int *a = new int [n];
+        int *c = new int [10000];
+        cout << "Введите  массив: " << endl ;
+        string ch;
+        for (int i = 0; i < n && k==0; i++)
+        {
+             int otr=0;
+            cin>>ch;
+            for(int m=0; m<ch.length(); m++)
+            {
+
+                if(ch[0]=='-'){otr=1;}
+                if(ch[m]<='9' && ch[m]>='0' || ch[m]=='-')
+                {
+                }
+                else{k=1;}
+            }
+            if(k==0)
+            {
+                a[i]=0;
+                if(otr == 0){
+                for(int j=0; j<ch.length(); j++)
+                {
+                    a[i]*=10;
+                    a[i]+=(ch[j]-'0');
+                }
+                }
+                else{
+                    for(int j=1; j<ch.length(); j++)
+                {
+                    a[i]*=10;
+                    a[i]-=(ch[j]-'0');
+                }
+                }
+                }
+        }
+        cout << endl;
+        int ye;
+        if(k==0)
+        {
+            cout<<"1 - Сортировка подсчетом"<<endl<<"2 - Быстрая сортировка"<<endl<<"Ваш выбор: ";
+            cin>>ye;
+            if(ye==1)
+            {
+                CountingSort(a, c, n);    // в функцию нужно передать введенный массив a[], массив счета чисел c[], размер массива n
+            }
+            else if(ye==2)
+            {
+                quickSort(a, 0, n-1);     // в функцию нужно передать введенный массив a[], два флажка 0 и n-1
+            }
+            else{
+                cout<<"неверное значение";
+            }
+            if(ye == 1 || ye == 2){
+            for (int i = 0; i < n; i++)
+            {
+                cout << a[i] << "\t";
+            }
+            }
+            cout << endl;
+        }
+    }
+    if(k)
+    {
+
+        cout<<"введено неверное значение";
+    }
+    return 0;
+}
